@@ -106,7 +106,11 @@ namespace SynoAI
         /// The amount of days to keep captured images before automatically deleting them.
         /// </summary>
         public static int DaysToKeepCaptures { get; private set; }
-
+        
+        /// <summary>
+        /// The file server URL and port for sending the Synology Chat images. 
+        /// </summary>
+        public static string FileServer { get; private set; }
         /// <summary>
         /// The artificial intelligence system to process the images with.
         /// </summary>
@@ -227,6 +231,8 @@ namespace SynoAI
             SaveOriginalSnapshot = configuration.GetValue<SaveSnapshotMode>("SaveOriginalSnapshot", SaveSnapshotMode.Off);
 
             DaysToKeepCaptures = configuration.GetValue<int>("DaysToKeepCaptures", 0);
+
+            FileServer = configuration.GetValue<string>("FileServer");
 
             IConfigurationSection aiSection = configuration.GetSection("AI");
             AI = aiSection.GetValue<AIType>("Type", AIType.DeepStack);

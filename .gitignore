@@ -367,7 +367,10 @@ FodyWeavers.xsd
 # Custom
 appsettings.Development.json
 appsettings.*.json
+appsettings.json
 PrivateNotes.txt
 Captures
 docker-compose.debug.yml
 .DS_STORE
+docker-compose.yml
+.github/

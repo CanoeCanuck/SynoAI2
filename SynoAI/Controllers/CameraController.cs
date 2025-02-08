@@ -336,30 +336,23 @@ namespace SynoAI.Controllers
                 _logger.LogInformation($"Captures Clean Up: Cleaning up images older than {Config.DaysToKeepCaptures} day(s).");
                 Task.Run(() =>
                 {
-                    try
+                    lock (_cleanUpOldImagesLock)
                     {
-                        lock (_cleanUpOldImagesLock)
-                        {
-                            _cleanupOldImagesRunning = true;
+                        _cleanupOldImagesRunning = true;
 
-                            DirectoryInfo directory = new(Constants.DIRECTORY_CAPTURES);
-                            IEnumerable<FileInfo> files = directory.GetFiles("*", new EnumerationOptions() { RecurseSubdirectories = true });
-                            foreach (FileInfo file in files)
+                        DirectoryInfo directory = new(Constants.DIRECTORY_CAPTURES);
+                        IEnumerable<FileInfo> files = directory.GetFiles("*", new EnumerationOptions() { RecurseSubdirectories = true });
+                        foreach (FileInfo file in files)
+                        {
+                            double age = (DateTime.Now - file.CreationTime).TotalDays;
+                            if (age > Config.DaysToKeepCaptures)
                             {
-                                double age = (DateTime.Now - file.CreationTime).TotalDays;
-                                if (age > Config.DaysToKeepCaptures)
-                                {
-                                    _logger.LogInformation($"Captures Clean Up: {file.FullName} is {age} day(s) old and will be deleted.");
-                                    System.IO.File.Delete(file.FullName);
-                                    _logger.LogInformation($"Captures Clean Up: {file.FullName} deleted.");
-                                }
+                                _logger.LogInformation($"Captures Clean Up: {file.FullName} is {age} day(s) old and will be deleted.");
+                                System.IO.File.Delete(file.FullName);
+                                _logger.LogInformation($"Captures Clean Up: {file.FullName} deleted.");
                             }
-                            _cleanupOldImagesRunning = false;
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "Captures Clean Up Failed");
+                        _cleanupOldImagesRunning = false;
                     }
                 });
             }

@@ -4,6 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>28d148b3-8b53-4408-a54f-bf5663c58802</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	<DockerfileTag>hankmeyer/synoai2</DockerfileTag>
   </PropertyGroup>
 
   <ItemGroup>
