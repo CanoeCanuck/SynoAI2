@@ -84,18 +84,21 @@ namespace SynoAI.Notifiers
             jsonObject.camera = camera.Name;
             jsonObject.foundTypes = notification.FoundTypes;
             jsonObject.predictions = notification.ValidPredictions;
-            jsonObject.message = GetMessage(camera, notification.FoundTypes);
+            jsonObject.message = GetMessage(camera, notification.FoundTypes); 
 
             if (sendImage)
             {
                 jsonObject.image = ToBase64String(notification.ProcessedImage.GetReadonlyStream());
             }
 
-            string imageUrl = GetImageUrl(camera, notification);
-            if (imageUrl != null)
+            string imageUrl = $"{Config.FileServer}" + $"/{camera.Name}/{notification.ProcessedImage.FileName}";
+
+
+             if (imageUrl != null)
             {
                 jsonObject.imageUrl = imageUrl;
             }
+            else jsonObject.imageUrl = "NoImageURL";
 
             return JsonConvert.SerializeObject(jsonObject);
         }
